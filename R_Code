@@ -1,0 +1,1336 @@
+#### Test for repeatablity of Interception EPA
+library(nflfastR)
+library(tidyverse)
+library(ggrepel)
+
+
+
+data_2021 <- load_pbp(2021)
+data_2020 <- load_pbp(2020)
+data_2019 <- load_pbp(2019)
+data_2018 <- load_pbp(2018)
+data_2017 <- load_pbp(2017)
+data_2016 <- load_pbp(2016)
+data_2015 <- load_pbp(2015)
+data_2014 <- load_pbp(2014)
+data_2013 <- load_pbp(2013)
+data_2012 <- load_pbp(2012)
+data_2011 <- load_pbp(2011)
+data_2010 <- load_pbp(2010)
+
+
+int_2021 <- data_2021 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+
+
+  
+
+int_2020 <- data_2020 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+int_2019 <- data_2019 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+int_2018 <- data_2018 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+int_2017 <- data_2017 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+int_2016 <- data_2016 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+int_2015 <- data_2015 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+int_2014 <- data_2014 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+int_2013 <- data_2013 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+int_2012 <- data_2012 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+
+int_2011 <- data_2011 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+int_2010 <- data_2010 %>%
+  filter(interception == 1) %>%
+  filter(epa != "NA")
+
+averge_epa_20 <- mean(int_2020$epa)
+averge_epa_19 <- mean(int_2019$epa)
+averge_epa_18 <- mean(int_2018$epa)
+averge_epa_17 <- mean(int_2017$epa)
+averge_epa_16 <- mean(int_2016$epa)
+averge_epa_15 <- mean(int_2015$epa)
+averge_epa_14 <- mean(int_2014$epa)
+averge_epa_13 <- mean(int_2013$epa)
+averge_epa_12 <- mean(int_2012$epa)
+averge_epa_11 <- mean(int_2011$epa)
+averge_epa_10 <- mean(int_2010$epa)
+
+epa_picks_2020 <- int_2020 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks)
+
+
+
+
+
+
+epa_picks_2020 <- int_2020 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_20)
+
+
+epa_picks_2019 <- int_2019 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks)
+
+
+
+epa_picks_2019 <- int_2019 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_19)
+
+
+
+test1 <- left_join(epa_picks_2020,epa_picks_2019, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y)
+
+glimpse(test1)
+
+REGRESSION <- lm(data = test1, epa_above_av.x ~ epa_above_av.y)
+summary(REGRESSION)
+
+REGRESSION2 <- lm(data = test1, epa_per_pick.x ~ epa_per_pick.y, weights = total_picks)
+summary(REGRESSION2)
+
+
+epa_picks_2018 <- int_2018 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks)
+
+
+
+
+epa_picks_2018 <- int_2018 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_18)
+
+
+
+
+epa_picks_2017 <- int_2017 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks)
+
+
+
+
+
+
+epa_picks_2017 <- int_2017 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_17)
+
+
+
+epa_picks_2016 <- int_2016 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_16)
+
+epa_picks_2015 <- int_2015 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_15)
+
+epa_picks_2014 <- int_2014 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_14)
+
+
+epa_picks_2013 <- int_2013 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_13)
+
+
+
+epa_picks_2012 <- int_2012 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_12)
+
+epa_picks_2011 <- int_2011 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_11)
+
+
+
+epa_picks_2010 <- int_2010 %>%
+  group_by(passer_player_name) %>%
+  summarise(picks = sum(interception),
+            epa_lost = sum(epa),
+            epa_per_pick = epa_lost/picks) %>%
+  mutate(epa_above_av = epa_per_pick - averge_epa_10)
+
+
+
+
+test2 <- left_join(epa_picks_2019,epa_picks_2018, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y)
+
+test3 <- left_join(epa_picks_2018,epa_picks_2017, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y)
+
+test4 <- left_join(epa_picks_2017,epa_picks_2016, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y)
+
+test5 <- left_join(epa_picks_2016,epa_picks_2015, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y)
+
+test6 <- left_join(epa_picks_2015,epa_picks_2014, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y)
+
+
+test7 <- left_join(epa_picks_2014,epa_picks_2013, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y)
+
+test8 <- left_join(epa_picks_2013,epa_picks_2012, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y)
+
+test9 <- left_join(epa_picks_2012,epa_picks_2011, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y)
+
+test10 <- left_join(epa_picks_2011,epa_picks_2010, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_picks = picks.x + picks.y) 
+
+
+### Remember to add test10 
+master_picks <- rbind(test1,test2,test3,test4,test5,test6,test7,test8,test9,test10)
+
+glimpse(master_picks)
+
+REGRESSION <- lm(data = master_picks, epa_above_av.x ~ epa_above_av.y)
+summary(REGRESSION)
+
+REGRESSION2 <- lm(data = master_picks, epa_above_av.x ~ epa_above_av.y, weights = total_picks)
+summary(REGRESSION2)
+
+pick_plot <- ggplot(data = master_picks, aes(x=epa_above_av.x,y=epa_above_av.y)) +
+  geom_smooth(method = "lm") +
+  geom_point(cex=master_picks$total_picks/5, alpha=1/4) +
+  labs(x = "EPA Lost Above Average on INT's Year X",
+       y="EPA Lost Above Average on INT's Year X + 1",
+       caption = "Data from NFLFastR. Graph By Chace McCallum",
+       title = "Is Anyone Good at Throwing Low Quality Interceptions?",
+       subtitle = "Data From 2010-2021. Dot Size Increasing With Number of Interceptions") +
+  theme_bw() + 
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5),
+        plot.caption = element_text(hjust = 0.5))
+
+pick_plot
+
+
+filtered_master <- master_picks %>%
+  filter(total_picks > 15)
+
+REGRESSION <- lm(data = filtered_master, epa_above_av.x ~ epa_above_av.y)
+summary(REGRESSION)
+
+REGRESSION2 <- lm(data = filtered_master, epa_above_av.x ~ epa_above_av.y, weights = total_picks)
+summary(REGRESSION2)
+
+
+pick_plot <- ggplot(data = filtered_master, aes(x=epa_per_pick.x,y=epa_per_pick.y)) +
+  geom_smooth(method = "lm") + 
+  geom_point(cex=filtered_master$total_picks/5, alpha=1/4) +
+  labs(x = "EPA Lost Above Average on INT's Year X",
+       y="EPA Lost Above Average on INT's Year X + 1",
+       caption = "Data from NFLFastR. Graph By Chace McCallum. Minimum 15 Interceptions to be Included",
+       title = "Is Anyone Good at Throwing Low Quality Interceptions?",
+       subtitle = "Data From 2010-2021. Dot Size Increasing With Number of Interceptions") +
+  theme_bw() + 
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5),
+        plot.caption = element_text(hjust = 0.5))
+
+pick_plot
+
+
+filtered_master <- master_picks %>%
+  filter(picks.x > 4) %>%
+  filter(picks.y > 4)
+
+REGRESSION <- lm(data = filtered_master, epa_above_av.x ~ epa_above_av.y)
+summary(REGRESSION)
+
+REGRESSION2 <- lm(data = filtered_master, epa_above_av.x ~ epa_above_av.y, weights = total_picks)
+summary(REGRESSION2)
+
+
+
+#### Fumble_Data 
+fum_2021 <- data_2021 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2021$fumble_was_qb[is.na(fum_2021$fumble_was_qb)] <- 0
+
+fum_2021 <- fum_2021 %>%
+  filter(fumble_was_qb == 1)
+
+
+fum_2020 <- data_2020 %>%
+  filter(fumble == 1) %>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2020$fumble_was_qb[is.na(fum_2020$fumble_was_qb)] <- 0
+
+fum_2020 <- fum_2020 %>%
+  filter(fumble_was_qb == 1)
+
+
+
+fum_2019 <- data_2019 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2019$fumble_was_qb[is.na(fum_2019$fumble_was_qb)] <- 0
+
+fum_2019 <- fum_2019 %>%
+  filter(fumble_was_qb == 1)
+
+
+
+fum_2018 <- data_2018 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA")  %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2018$fumble_was_qb[is.na(fum_2018$fumble_was_qb)] <- 0
+
+fum_2018 <- fum_2018 %>%
+  filter(fumble_was_qb == 1)
+
+
+fum_2017 <- data_2017 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2017$fumble_was_qb[is.na(fum_2017$fumble_was_qb)] <- 0
+
+fum_2017 <- fum_2017 %>%
+  filter(fumble_was_qb == 1)
+
+##3 2016
+fum_2016 <- data_2016 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2016$fumble_was_qb[is.na(fum_2016$fumble_was_qb)] <- 0
+
+fum_2016 <- fum_2016 %>%
+  filter(fumble_was_qb == 1)
+
+### 2015
+fum_2015 <- data_2015 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2015$fumble_was_qb[is.na(fum_2015$fumble_was_qb)] <- 0
+
+fum_2015 <- fum_2015 %>%
+  filter(fumble_was_qb == 1)
+
+
+
+### 2014
+fum_2014 <- data_2014 %>%
+  filter(fumble == 1) %>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2014$fumble_was_qb[is.na(fum_2014$fumble_was_qb)] <- 0
+
+fum_2014 <- fum_2014 %>%
+  filter(fumble_was_qb == 1)
+
+### 2013
+
+fum_2013 <- data_2013 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2013$fumble_was_qb[is.na(fum_2013$fumble_was_qb)] <- 0
+
+fum_2013 <- fum_2013 %>%
+  filter(fumble_was_qb == 1)
+
+### 2012
+
+fum_2012 <- data_2012 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2012$fumble_was_qb[is.na(fum_2012$fumble_was_qb)] <- 0
+
+fum_2012 <- fum_2012 %>%
+  filter(fumble_was_qb == 1)
+
+
+### 2011
+fum_2011 <- data_2011 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2011$fumble_was_qb[is.na(fum_2011$fumble_was_qb)] <- 0
+
+fum_2011 <- fum_2011 %>%
+  filter(fumble_was_qb == 1)
+
+### 2010
+fum_2010 <- data_2010 %>%
+  filter(fumble == 1)%>%
+  filter(play_type == "pass") %>%
+  filter(epa != "NA") %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0))
+
+fum_2010$fumble_was_qb[is.na(fum_2010$fumble_was_qb)] <- 0
+
+fum_2010 <- fum_2010 %>%
+  filter(fumble_was_qb == 1)
+
+
+
+averge_epa_20f <- mean(fum_2020$epa)
+averge_epa_19f <- mean(fum_2019$epa)
+averge_epa_18f <- mean(fum_2018$epa)
+averge_epa_17f <- mean(fum_2017$epa)
+averge_epa_16f <- mean(fum_2016$epa)
+averge_epa_15f <- mean(fum_2015$epa)
+averge_epa_14f <- mean(fum_2014$epa)
+averge_epa_13f <- mean(fum_2013$epa)
+averge_epa_12f <- mean(fum_2012$epa)
+averge_epa_11f <- mean(fum_2011$epa)
+averge_epa_10f <- mean(fum_2010$epa)
+
+
+epa_FUM_2020 <- fum_2020 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_20f)
+
+epa_FUM_2019 <- fum_2019 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_19f)
+
+epa_FUM_2018 <- fum_2018 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_18f)
+
+epa_FUM_2017 <- fum_2017 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_17f)
+
+epa_FUM_2016 <- fum_2016 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_16f)
+
+epa_FUM_2015 <- fum_2015 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_15f)
+
+epa_FUM_2014 <- fum_2014 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_14f)
+
+epa_FUM_2013 <- fum_2013 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_13f)
+
+epa_FUM_2012 <- fum_2012 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_12f)
+
+epa_FUM_2011 <- fum_2011 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_11f)
+
+epa_FUM_2010 <- fum_2010 %>%
+  group_by(passer_player_name) %>%
+  summarise(FUMBLES = sum(fumble),
+            epa_lost = sum(epa),
+            epa_per_fumble = epa_lost/FUMBLES) %>%
+  mutate(epa_above_av = epa_per_fumble - averge_epa_10f)
+
+
+next_1 <- left_join(epa_FUM_2020,epa_FUM_2019, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+next_2 <- left_join(epa_FUM_2019,epa_FUM_2018, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+next_3 <- left_join(epa_FUM_2018,epa_FUM_2017, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+next_4 <- left_join(epa_FUM_2017,epa_FUM_2016, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+next_5 <- left_join(epa_FUM_2016,epa_FUM_2015, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+next_6 <- left_join(epa_FUM_2015,epa_FUM_2014, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+next_7 <- left_join(epa_FUM_2014,epa_FUM_2013, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+next_8 <- left_join(epa_FUM_2013,epa_FUM_2012, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+
+next_9 <- left_join(epa_FUM_2012,epa_FUM_2011, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+next_10 <- left_join(epa_FUM_2011,epa_FUM_2010, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(total_fumbles = FUMBLES.x + FUMBLES.y)
+
+master_fumble <- rbind(next_1,next_2,next_3,next_4,next_5,next_6,next_7,next_8,next_9,next_10)
+
+glimpse(master_fumble)
+
+REGRESSION <- lm(data = master_fumble, epa_above_av.x ~ epa_above_av.y)
+summary(REGRESSION)
+
+REGRESSION2 <- lm(data = master_fumble, epa_above_av.x ~ epa_above_av.y, weights = total_fumbles)
+summary(REGRESSION2)
+
+
+
+
+
+
+
+
+### Plot Year Over Year Variation in Fumble EPA Above Expected
+yoy_fumbles <- ggplot(master_fumble, aes(x=epa_above_av.x,y=epa_above_av.y)) +
+  geom_vline(xintercept =  mean(master_fumble$epa_above_av.x), color = "red", linetype = "dashed") +
+  geom_hline(yintercept =  mean(master_fumble$epa_above_av.y), color = "red", linetype = "dashed") +
+  geom_point(cex=master_fumble$total_fumbles/4, alpha=1/2) +
+  labs(x = "EPA Lost on Fumbles Above Average Year X",
+       y="EPA Lost on Fumbles Above Average Year X + 1",
+       caption = "Data from nflfastR, Chart @CMHockey66",
+       title = "Are Certain NFL QB's Good At Situational Fumbling?",
+       subtitle = "Year Over Year Relationship Between EPA Lost On Fumbles Relative to Average") +
+  theme_bw() + 
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5)) +
+  geom_smooth(method = "lm")
+
+yoy_fumbles
+
+
+### Now Create the Adjusted EPA Graphs For 2021
+
+
+
+### Can Apply a Filter
+next_2021 <- data_2021 %>%
+  filter(week < 5)
+
+start_fumble_Adjusted <- next_2021 %>% 
+  filter(play_type=="no_play" | play_type=="pass" | play_type=="run") 
+
+next_fumble <- start_fumble_Adjusted %>%
+  mutate(
+    pass = if_else(str_detect(desc, "(pass)|(sacked)|(scramble)"), 1, 0),
+    rush = if_else(str_detect(desc, "(left end)|(left tackle)|(left guard)|(up the middle)|(right guard)|(right tackle)|(right end)") & pass == 0, 1, 0),
+    success = ifelse(epa>0, 1 , 0)
+  ) 
+
+was_qb_fumble_2021 <- next_fumble %>%
+  mutate(fumble_was_qb = case_when(fumbled_1_player_name == passer_player_name ~ 1,
+                                   fumbled_1_player_name != passer_player_name ~ 0)) %>%
+  filter(epa != "NA")
+
+was_qb_fumble_2021$fumble_was_qb[is.na(was_qb_fumble_2021$fumble_was_qb)] <- 0
+
+epa_fum_try <- was_qb_fumble_2021 %>%
+  filter(fumble_was_qb == 1)
+
+mean_fumble_epa_2021 <- mean(epa_fum_try$qb_epa)
+
+
+### Now Create a New EPA Variable Where Each Fumble is treated as average
+adjusted_fumble_epa_21 <- was_qb_fumble_2021 %>%
+  mutate(epa_new = case_when(fumble_was_qb == 1 ~ mean_fumble_epa_2021,
+                             fumble_was_qb != 1 ~ qb_epa)) 
+
+
+
+### Back to normal code
+epa_per_play_2021 <- adjusted_fumble_epa_21 %>%
+  filter(season_type == "REG", !is.na(epa)) %>%
+  group_by(id, name) %>%
+  summarize(
+    epa = mean(qb_epa),
+    fumble_adj_epa = mean(epa_new),
+    cpoe = mean(cpoe, na.rm = T),
+    n_dropbacks = sum(pass),
+    n_plays = n(),
+    team = last(posteam)
+  ) %>%
+  ungroup() %>%
+  filter(n_dropbacks > 24) %>%
+  mutate(epa_change = fumble_adj_epa - epa)
+
+epa_per_play_2021 <- epa_per_play_2021 %>%
+  left_join(teams_colors_logos, by = c('team' = 'team_abbr'))
+
+qb_names <- epa_per_play_2021$name
+qb_epa <- epa_per_play_2021$epa
+
+
+
+
+qb_cpoe <- epa_per_play_2021$cpoe
+
+df_name1 <- cbind(qb_names,qb_epa,qb_cpoe)
+
+df_name2 <- as.data.frame(df_name1) %>%
+  mutate(epa_type = "Regular")
+
+
+qb_epa <- epa_per_play_2021$fumble_adj_epa
+
+df_name11 <- cbind(qb_names,qb_epa,qb_cpoe)
+
+df_name22 <- as.data.frame(df_name11) %>%
+  mutate(epa_type = "Fumble_Adjusted")
+
+
+df_name <- rbind(df_name2,df_name22) %>%
+  arrange((qb_names)) %>%
+  mutate(paired = rep(1:(n()/2),each=2)) %>%
+  mutate(qb_epa = as.numeric(qb_epa)) %>%
+  mutate(qb_cpoe = as.numeric(qb_cpoe))
+
+glimpse(df_name)
+
+
+
+change_in_epa <- ggplot(data = df_name, aes(x=qb_cpoe,y=qb_epa, color=epa_type)) +
+  geom_point(aes(fill=epa_type),size=3) +
+  geom_line(aes(group = paired),
+            color="grey",
+            arrow = arrow(type = "closed",
+                          length=unit(0.075, "inches"))) +
+  geom_text_repel(aes(label=ifelse(epa_type == "Fumble_Adjusted",as.character(qb_names),'')),
+                  force=1, point.padding=0.04,
+                  segment.size=0.1) +
+  labs(x = "CPOE",
+       y="QB EPA Per Play",
+       caption = "Data from nflfastR, Chart @CMHockey66",
+       title = "QB EPA Per Play (2021 to Week 4)",
+       subtitle = "Effect of Fumbles on QB EPA") +
+  theme_bw() + 
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5)) +
+  geom_hline(yintercept = mean(df_name$qb_epa), color = "red", linetype = "dashed") +
+  geom_vline(xintercept =  mean(df_name$qb_cpoe), color = "red", linetype = "dashed")
+  
+  
+  
+  
+change_in_epa
+
+
+
+
+
+### Was Sack
+sack_2021 <- data %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2020 <- data_2020 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2019 <- data_2019 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2018 <- data_2018 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2017 <- data_2017 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2016 <- data_2016 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2015 <- data_2015 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2014 <- data_2014 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2013 <- data_2013 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2012 <- data_2012 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+
+sack_2011 <- data_2011 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+sack_2010 <- data_2010 %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA") 
+
+
+sackaverge_epa_20 <- mean(sack_2020$epa)
+sackaverge_epa_19 <- mean(sack_2019$epa)
+sackaverge_epa_18 <- mean(sack_2018$epa)
+sackaverge_epa_17 <- mean(sack_2017$epa)
+sackaverge_epa_16 <- mean(sack_2016$epa)
+sackaverge_epa_15 <- mean(sack_2015$epa)
+sackaverge_epa_14 <- mean(sack_2014$epa)
+sackaverge_epa_13 <- mean(sack_2013$epa)
+sackaverge_epa_12 <- mean(sack_2012$epa)
+sackaverge_epa_11 <- mean(sack_2011$epa)
+sackaverge_epa_10 <- mean(sack_2010$epa)
+
+epa_sack_2020 <- sack_2020 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_20) %>%
+  filter(passer_player_name != "K.Allen")
+
+passes_2020 <- data_2020 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(Passes = sum(pass)) %>%
+  filter(passer_player_name != "K.Allen")
+
+joined_for_Sack_rate <- left_join(epa_sack_2020,passes_2020, by = "passer_player_name") %>%
+  mutate(sack_rate = sacks_taken / Passes) %>%
+  filter(sacks_taken > 9)
+
+sacks_2020_graph <- ggplot(joined_for_Sack_rate, aes(x=epa_above_av,y=sack_rate)) +
+  geom_hline(yintercept = mean(joined_for_Sack_rate$sack_rate), color = "red", linetype = "dashed") +
+  geom_vline(xintercept =  mean(joined_for_Sack_rate$epa_above_av), color = "red", linetype = "dashed") +
+  geom_point(color = ifelse(joined_for_Sack_rate$passer_player_name == "K.Cousins" | joined_for_Sack_rate$passer_player_name == "M.Stafford", "red", "black"), cex=joined_for_Sack_rate$sacks_taken/5, alpha=1/4) +
+  geom_text_repel(aes(label=passer_player_name),
+                  force=1, point.padding=0.04,
+                  segment.size=0.1) +
+  labs(x = "EPA Lost Above Average Per Sack",
+       y="Sack Rate",
+       caption = "Data from nflfastR, Graph By @CMHockey66",
+       title = "Sack Rate vs. EPA Lost Above Average Per Sack (2020 Season)") +
+  theme_bw() + 
+  geom_smooth(method = "lm",se=F) + 
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5)) +
+  annotate("text", x =-1, y=0.14, label= "Often Sacked, Often Costly") + 
+  annotate("text", x = -1, y=0.015, label = "Rarley Sacked, Often Costly") +
+  annotate("text", x = 0.48, y=0.14, label = "Often Sacked, Rarley Costly") +
+  annotate("text", x = 0.48, y=0.015, label = "Rarley Sacked, Rarley Costly")
+
+
+sacks_2020_graph
+
+
+glimpse(joined_for_Sack_rate)
+
+
+sacks_2020_graph2 <- ggplot(joined_for_Sack_rate, aes(x=epa_lost,y=sacks_taken)) +
+  geom_hline(yintercept = mean(joined_for_Sack_rate$sacks_taken), color = "red", linetype = "dashed") +
+  geom_vline(xintercept =  mean(joined_for_Sack_rate$epa_lost), color = "red", linetype = "dashed") +
+  geom_point(color = ifelse(joined_for_Sack_rate$passer_player_name == "K.Cousins" | joined_for_Sack_rate$passer_player_name == "M.Stafford", "red", "black"), cex=joined_for_Sack_rate$sacks_taken/5, alpha=1/4) +
+  geom_text_repel(aes(label=passer_player_name),
+                  force=1, point.padding=0.04,
+                  segment.size=0.1) +
+  labs(x = "Cummulative EPA Lost on Sacks",
+       y="Cummulative Sacks Takes",
+       caption = "Data from nflfastR, Graph By @CMHockey66",
+       title = "Sacks Taken vs. EPA Lost on Sacks (2020 Season)",
+       subtitle = "Note: More Negative EPA Represents More Expected Points Lost") +
+  theme_bw() + 
+  geom_smooth(method = "lm",se=F) + 
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5))
+
+
+sacks_2020_graph2
+
+
+
+epa_sack_2019 <- sack_2019 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_19)
+
+epa_sack_2018 <- sack_2018 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_18)
+
+epa_sack_2017 <- sack_2017 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_17)
+
+epa_sack_2016 <- sack_2016 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_16)
+
+epa_sack_2015 <- sack_2015 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_15)
+
+epa_sack_2014 <- sack_2014 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_14)
+
+epa_sack_2013 <- sack_2013 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_13)
+
+epa_sack_2012 <- sack_2012 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_12)
+
+epa_sack_2011 <- sack_2011 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_11)
+
+epa_sack_2010 <- sack_2010 %>%
+  group_by(passer_player_name,posteam) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - sackaverge_epa_10) 
+
+
+next_11 <- left_join(epa_sack_2020,epa_sack_2019, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+next_21 <- left_join(epa_sack_2019,epa_sack_2018, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+next_31 <- left_join(epa_sack_2018,epa_sack_2017, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+next_41 <- left_join(epa_sack_2017,epa_sack_2016, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+next_51 <- left_join(epa_sack_2016,epa_sack_2015, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+next_61 <- left_join(epa_sack_2015,epa_sack_2014, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+next_71 <- left_join(epa_sack_2014,epa_sack_2013, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+next_81 <- left_join(epa_sack_2013,epa_sack_2012, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+
+next_91 <- left_join(epa_sack_2012,epa_sack_2011, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+next_101 <- left_join(epa_sack_2011,epa_sack_2010, by = "passer_player_name") %>%
+  filter(epa_lost.y != "NA") %>%
+  mutate(sacks = sacks_taken.x + sacks_taken.y)
+
+
+master_sack <- rbind(next_11,next_21,next_31,next_41,next_51,next_61,next_71,next_81,next_91,next_101) %>%
+  mutate(same_team = case_when(posteam.x == posteam.y ~ "Same Team",
+                               posteam.x != posteam.y ~ "Changed Team"))
+
+
+glimpse(master_sack)
+
+filtered_sacks <- master_sack %>%
+  filter(sacks_taken.x > 19) %>%
+  filter(sacks_taken.y > 19)
+
+glimpse(master_sack)
+
+REGRESSION <- lm(data = filtered_sacks, epa_above_av.x ~ epa_above_av.y)
+summary(REGRESSION)
+
+REGRESSION2 <- lm(data = filtered_sacks, epa_above_av.x ~ epa_above_av.y, weights = sacks)
+summary(REGRESSION2)
+
+
+
+#### Show for change teams and same teams
+change_Team_sack <- master_sack %>%
+  filter(same_team == "Changed Team")
+same_Team_sack <- master_sack %>%
+  filter(same_team != "Changed Team")
+
+
+glimpse(change_Team_sack)
+
+
+REGRESSION2 <- lm(data = same_Team_sack, epa_above_av.x ~ epa_above_av.y, weights = sacks)
+summary(REGRESSION2)
+
+yoy_repeat_Sakcs22 <-  ggplot(same_Team_sack, aes(x=epa_above_av.x,y=epa_above_av.y,,color = sacks)) +
+  geom_vline(xintercept =  mean(same_Team_sack$epa_above_av.x), color = "red", linetype = "dashed") +
+  geom_hline(yintercept =  mean(same_Team_sack$epa_above_av.y), color = "red", linetype = "dashed") +
+  geom_point(aes(size=sacks)) +
+  labs(x = "EPA Lost Above Average Per Sack Year X + 1",
+       y="EPA Lost Above Average Per Sack Year X",
+       caption = "Data from nflfastR, Plot By @CMHockey66",
+       title = "Do QBs Control Quality of Sack Too?",
+       subtitle = "Year Over Year Repeatability of EPA Per Sack Among QB's. 2010 - 2020") +
+  theme_bw() + 
+  geom_smooth(method = "lm") +
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5))
+  
+yoy_repeat_Sakcs22
+
+
+
+
+yoy_repeat_Sakcs <-  ggplot(filtered_sacks, aes(x=epa_above_av.x,y=epa_above_av.y, color = sacks)) +
+  geom_vline(xintercept =  mean(filtered_sacks$epa_above_av.x), color = "red", linetype = "dashed") +
+  geom_hline(yintercept =  mean(filtered_sacks$epa_above_av.y), color = "red", linetype = "dashed") +
+  geom_point(aes(size=sacks)) +
+  facet_wrap(~same_team) +
+  labs(x = "EPA Lost Above Average Per Sack Year X + 1",
+       y="EPA Lost Above Average Per Sack Year X",
+       caption = "Data from nflfastR, Plot By @CMHockey66",
+       title = "Do QBs Control Quality of Sack Too?",
+       subtitle = "Year Over Year Repeatability of EPA Per Sack Among QB's. 2010 - 2020") +
+  theme_bw() + 
+  geom_smooth(method = "lm") +
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5)) 
+
+
+yoy_repeat_Sakcs
+
+
+
+REGRESSION3 <- lm(data = change_Team_sack, epa_above_av.x ~ epa_above_av.y, weights = sacks)
+summary(REGRESSION3)
+
+REGRESSION4 <- lm(data = change_Team_sack, epa_above_av.x ~ epa_above_av.y)
+summary(REGRESSION4)
+
+REGRESSION33 <- lm(data = same_Team_sack, epa_above_av.x ~ epa_above_av.y, weights = sacks)
+summary(REGRESSION33)
+
+REGRESSION44 <- lm(data = same_Team_sack, epa_above_av.x ~ epa_above_av.y)
+summary(REGRESSION44)
+### Graph
+yoy_repeat_Sakcs <-  ggplot(change_Team_sack, aes(x=epa_above_av.x,y=epa_above_av.y, color = sacks)) +
+  geom_vline(xintercept =  mean(change_Team_sack$epa_above_av.x), color = "red", linetype = "dashed") +
+  geom_hline(yintercept =  mean(change_Team_sack$epa_above_av.y), color = "red", linetype = "dashed") +
+  geom_point(aes(size=sacks)) +
+  labs(x = "EPA Lost Above Average Per Sack Year X + 1",
+       y="EPA Lost Above Average Per Sack Year X",
+       caption = "Data from nflfastR, Graph By @CMHockey66",
+       title = "Do QBs Control Quality of Sack Too?",
+       subtitle = "Year Over Year Repeatability of EPA Per Sack Among QB's Who Changed Teams (2020-2010)") +
+  theme_bw() + 
+  geom_smooth(method = "lm") +
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5)) +
+  annotate("text", x =0, y=1.2, label= "Slope = 0.34. R Squared = 0.09. P Value = 0.00") +
+  annotate("text", x =0.14, y=1, label= "Weighted Slope = 0.28. R Squared = 0.04. P Value = 0.03")
+
+
+yoy_repeat_Sakcs
+### Sacks Taken
+this_year <- load_pbp(2021)
+
+### Get # DBs for Sack Rate
+passes_3_years <- this_year %>%
+  group_by(passer_player_name) %>%
+  summarise(Passes = sum(pass)) 
+
+
+
+sack_3_Years <- this_year %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+
+epa_sack_3_years <- sack_3_Years %>%
+  group_by(passer_player_name) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa),
+            epa_per_sack = epa_lost/sacks_taken)
+
+
+
+joined_3_year_sack <- left_join(epa_sack_3_years,passes_3_years, by = "passer_player_name") %>%
+  mutate(sack_Rate = sacks_taken / Passes) %>%
+  filter(Passes > 199) %>%
+  filter(passer_player_name != "NA")
+
+AVERAGE_EPA_Sack <- mean(joined_3_year_sack$epa_per_sack)
+
+glimpse(joined_3_year_sack)
+
+regression_sack <- lm(data = joined_3_year_sack, epa_per_sack ~ sack_Rate)
+summary(regression_sack)
+
+
+
+final_Sack_graph <- ggplot(joined_3_year_sack, aes(x=epa_per_sack,y=sack_Rate)) +
+  geom_hline(yintercept = mean(joined_3_year_sack$sack_Rate), color = "red", linetype = "dashed") +
+  geom_vline(xintercept =  mean(joined_3_year_sack$epa_per_sack), color = "red", linetype = "dashed") +
+  geom_point(color = ifelse(joined_3_year_sack$passer_player_name == "M.Jones" | joined_3_year_sack$passer_player_name == "Z.Wilson" | joined_3_year_sack$passer_player_name == "T.Lawrence" | joined_3_year_sack$passer_player_name == "J.Fields", "red", "black"), cex=joined_3_year_sack$Passes/60, alpha=1/4) +
+  geom_text_repel(aes(label=passer_player_name),
+                  force=1, point.padding=0.04,
+                  segment.size=0.1) +
+  labs(x = "Average EPA Lost Per Sack",
+       y="Sack Rate",
+       caption = "Data from nflfastR, Graph By @CMHockey66",
+       title = "Sack Rate Vs Sack Efficiency 2021",
+       subtitle = "Minimum 200 Dropbacks") +
+  theme_bw() + 
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5))  +
+  geom_smooth(method = "lm", se=F)
+
+
+final_Sack_graph
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+previous_5_Years_For_article <- load_pbp(2021:2016)
+
+just_fumbs <- previous_5_Years_For_article %>%
+  filter(fumble == 1) %>%
+  filter(epa != "NA")
+
+
+
+
+five_year_fum <- mean(just_fumbs$epa)
+
+just_sacks <- previous_5_Years_For_article %>%
+  filter(sack == 1) %>%
+  filter(epa != "NA")
+
+dropbackss <- previous_5_Years_For_article %>%
+  filter(qb_dropback == 1)
+  
+total_dbs <- dropbackss %>%
+  group_by(passer_player_name) %>%
+  summarise(dbs = sum(qb_dropback))
+
+
+
+
+
+
+adjusted_sack_Epa <- just_sacks %>%
+  mutate(epa_new2 = case_when(fumble == 1 ~ five_year_fum,
+                              fumble != 1 ~ epa))
+
+five_year_sacks2 <- mean(just_sacks$epa)
+five_year_sacks <- mean(adjusted_sack_Epa$epa_new2)
+
+epa_sack_5_years <- adjusted_sack_Epa %>%
+  group_by(passer_player_name) %>%
+  summarise(sacks_taken = sum(sack),
+            epa_lost = sum(epa_new2),
+            epa_per_sack = epa_lost/sacks_taken) %>%
+  mutate(epa_above_av = epa_per_sack - five_year_sacks) %>%
+  mutate(expected_epa_lost = five_year_sacks*sacks_taken) %>%
+  mutate(cummulative_epa_Saved = epa_lost - expected_epa_lost)
+
+
+
+epa_sack_5_years_join <- left_join(epa_sack_5_years, total_dbs, by = "passer_player_name") %>%
+  mutate(sack_rate = sacks_taken / dbs) %>%
+  mutate(sack_epa_per_db = epa_lost / dbs)
+  
+  
+  
+just_starters_Sakcs <- epa_sack_5_years_join %>%
+  filter(sacks_taken > 50)
+glimpse(just_starters_Sakcs)
+
+
+regression_sack <- lm(data = just_starters_Sakcs, epa_above_av ~ sack_rate)
+
+summary(regression_sack)
+
+sack_graph <- ggplot(just_starters_Sakcs, aes(x=sack_rate,y=epa_above_av)) +
+  geom_hline(yintercept = mean(just_starters_Sakcs$epa_above_av), color = "red", linetype = "dashed") +
+  geom_vline(xintercept =  mean(just_starters_Sakcs$sack_rate), color = "red", linetype = "dashed") +
+  geom_point(color = ifelse(just_starters_Sakcs$passer_player_name == "L.Jackson", "red", "black"), cex=just_starters_Sakcs$sacks_taken/30, alpha=1/4) +
+  geom_text_repel(aes(label=passer_player_name),
+                  force=1, point.padding=0.04,
+                  segment.size=0.1) +
+  labs(x = "Sack Rate",
+       y="EPA Added Per Sack Above Average",
+       caption = "Data from nflfastR",
+       title = "Which QBs Are Best at Taking Sacks?",
+       subtitle = "Data From 2016-2021") +
+  theme_bw() + 
+  theme(axis.title = element_text(size = 12),
+        axis.text = element_text(size = 10),
+        plot.title = element_text(size = 16),
+        plot.subtitle = element_text(size = 14),
+        plot.caption = element_text(size = 12)) +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust=0.5))
+
+
+sack_graph
